@@ -16,8 +16,8 @@ from nltk.stem import WordNetLemmatizer
 nltk.download('popular', quiet=True)  # for downloading packages
 
 # uncomment the following only the first time
-# nltk.download('punkt') # first-time use only
-# nltk.download('wordnet') # first-time use only
+nltk.download('punkt') # first-time use only
+nltk.download('wordnet') # first-time use only
 
 
 # Reading in the corpus
@@ -45,14 +45,14 @@ def LemNormalize(text):
 
 # Keyword Matching
 GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey",)
-GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
+# GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
 
 
-def greeting(sentence):
-    """If user's input is a greeting, return a greeting response"""
-    for word in sentence.split():
-        if word.lower() in GREETING_INPUTS:
-            return random.choice(GREETING_RESPONSES)
+# def greeting(sentence):
+#     """If user's input is a greeting, return a greeting response"""
+#     for word in sentence.split():
+#         if word.lower() in GREETING_INPUTS:
+#             return random.choice(GREETING_RESPONSES)
 
 
 # Generating response
