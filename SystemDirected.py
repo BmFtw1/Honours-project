@@ -19,6 +19,8 @@ nltk.download('popular', quiet=True)  # for downloading packages
 # nltk.download('punkt') # first-time use only
 # nltk.download('wordnet') # first-time use only
 
+# with open("json") as file:
+#     data = json.load(file)
 
 # Reading in the corpus
 with open('H:\Honours-project\WikiQACorpus\WikiQA-test.txt','r', encoding='utf8', errors ='ignore') as fin:
