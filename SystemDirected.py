@@ -1,18 +1,16 @@
 # import necessary libraries
-import io
 import random
 import string  # to process standard python strings
 import warnings
-import numpy as np
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import warnings
 
 warnings.filterwarnings('ignore')
 
 import nltk
 from nltk.stem import WordNetLemmatizer
-
+import xml.etree.ElementTree as ET
 nltk.download('popular', quiet=True)  # for downloading packages
 
 # uncomment the following only the first time
@@ -23,12 +21,30 @@ nltk.download('popular', quiet=True)  # for downloading packages
 #     data = json.load(file)
 
 # Reading in the corpus
-with open('H:\Honours-project\WikiQACorpus\WikiQA-test.txt','r', encoding='utf8', errors ='ignore') as fin:
-    raw = fin.read().lower()
-    
+# with open('H:\Honours-project\smsCorpus_en_2015.03.09_all.xml','r', encoding='utf8', errors ='ignore') as fin:
+#     raw = fin.read().lower()
+
+mylistofwords = []
+
+
+tree = ET.parse('H:\Honours-project\smsCorpus_en_2015.03.09_all.xml')
+root = tree.getroot()
+for line in root:
+    mylistofwords.append(line[0].text)
+
+
 # TOkenisation
-sent_tokens = nltk.sent_tokenize(raw)  # converts to list of sentences
-word_tokens = nltk.word_tokenize(raw)  # converts to list of words
+for sentence in mylistofwords:
+    sentences = []
+    sentences.append(nltk.sent_tokenize(sentence))
+    for s in sentence:
+        words = []
+        words.append(nltk.sent_tokenize(words))
+
+# TOkenisation
+# sent_tokens = nltk.sent_tokenize(mylistofwords)  # converts to list of sentences
+# word_tokens = nltk.word_tokenize(mylistofwords)  # converts to list of words
+
 
 # Preprocessing
 lemmer = WordNetLemmatizer()
