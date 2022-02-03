@@ -25,7 +25,8 @@ nltk.download('popular', quiet=True)  # for downloading packages
 #     raw = fin.read().lower()
 
 mylistofwords = []
-
+sentences = []
+words = []
 
 tree = ET.parse('H:\Honours-project\smsCorpus_en_2015.03.09_all.xml')
 root = tree.getroot()
@@ -35,17 +36,19 @@ for line in root:
 
 # TOkenisation
 for sentence in mylistofwords:
-    sentences = []
-    sentences.append(nltk.sent_tokenize(sentence))
+    sentences = [nltk.sent_tokenize(sentence)]
     for s in sentence:
-        words = []
-        words.append(nltk.sent_tokenize(words))
+        words = [nltk.sent_tokenize(s)]
+
+
+
 
 # TOkenisation
-# sent_tokens = nltk.sent_tokenize(mylistofwords)  # converts to list of sentences
-# word_tokens = nltk.word_tokenize(mylistofwords)  # converts to list of words
+#sent_tokens = nltk.sent_tokenize(mylistofwords)  # converts to list of sentences
+#word_tokens = nltk.word_tokenize(words)  # converts to list of words
 
-
+sent_tokens = sentences
+word_tokens = words
 # Preprocessing
 lemmer = WordNetLemmatizer()
 
@@ -53,12 +56,11 @@ lemmer = WordNetLemmatizer()
 def LemTokens(tokens):
     return [lemmer.lemmatize(token) for token in tokens]
 
-
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
 
 def LemNormalize(text):
-    return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
+    return LemTokens(nltk.word_tokenize(text.translate(remove_punct_dict)))
 
 
 # Keyword Matching
@@ -68,8 +70,8 @@ GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! Yo
 
 def greeting(sentence):
     """If user's input is a greeting, return a greeting response"""
-    for word in sentence.split():
-        if word.lower() in GREETING_INPUTS:
+    for word in sentence:
+        if word in GREETING_INPUTS:
             return random.choice(GREETING_RESPONSES)
 
 
@@ -96,7 +98,8 @@ flag = True
 print("ROBO: Hello, nice to meet you!")
 while (flag == True):
     user_response = input()
-    user_response = user_response.lower()
+
+    user_response = user_response
     if (user_response != 'bye'):
         if (user_response == 'thanks' or user_response == 'thank you'):
             flag = False
