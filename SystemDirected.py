@@ -2,19 +2,16 @@
 import random
 import string  # to process standard python strings
 import warnings
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 warnings.filterwarnings('ignore')
-
 import nltk
 from nltk.stem import WordNetLemmatizer
-import xml.etree.ElementTree as ET
 
 nltk.download('popular', quiet=True)  # for downloading packages
 
-# uncomment the following only the first time
+# uncomment the following on the first time running
 # nltk.download('punkt') # first-time use only
 # nltk.download('wordnet') # first-time use only
 
@@ -22,28 +19,13 @@ nltk.download('popular', quiet=True)  # for downloading packages
 #     data = json.load(file)
 
 # Reading in the corpus
-with open('H:\Honours-project\WikiQACorpus\WikiQA-dev.txt', 'r', encoding='utf8', errors='ignore') as fin:
-    raw = fin.read().lower()
+with open('H:\Honours-project\chatbot.txt', 'r', encoding='utf8', errors='ignore') as fin:
+    data = fin.read().lower()
 
 mylistofwords = []
-sentences = []
-words = []
-
-# tree = ET.parse('H:\Honours-project\smsCorpus_en_2015.03.09_all.xml')
-# root = tree.getroot()
-#
-# for line in root:
-#     mylistofwords.append(line[0].text)
 
 # TOkenisation
-# for sentence in mylistofwords:
-#     sentences = [nltk.sent_tokenize(sentence)]
-#     for s in sentence:
-#         words = [nltk.sent_tokenize(s)]
-
-# TOkenisation
-sent_tokens = nltk.sent_tokenize(raw)  # converts to list of sentences
-word_tokens = nltk.word_tokenize(raw)  # converts to list of words
+sent_tokens = nltk.sent_tokenize(data)  # converts to list of sentences
 
 # Preprocessing
 lemmer = WordNetLemmatizer()
@@ -56,7 +38,8 @@ def LemTokens(tokens):
 remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
 
 
-def LemNormalize(text):
+# return a list of lemmatized lower case words after removing punctuations
+def LemNormalise(text):
     return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
 
@@ -65,6 +48,7 @@ GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey",)
 GREETING_RESPONSES = ["hi", "hey", "*nods*", "hi there", "hello", "I am glad! You are talking to me"]
 
 
+# Word matching for greetings
 def greeting(sentence):
     """If user's input is a greeting, return a greeting response"""
     for word in sentence.split():
@@ -74,39 +58,47 @@ def greeting(sentence):
 
 # Generating response
 def response(user_response):
-    robo_response = ''
+    user_response = user_response.lower()
+    bot_response = ''
     sent_tokens.append(user_response)
-    TfidfVec = TfidfVectorizer(tokenizer=LemNormalize, stop_words='english')
-    tfidf = TfidfVec.fit_transform(sent_tokens)
+    # Create the TfidfVectorizer Object
+    tfidfVec = TfidfVectorizer(tokenizer=LemNormalise, stop_words='english', analyzer='word')
+    # Convert the list of sentences to a matrix of TF-IDF features
+    tfidf = tfidfVec.fit_transform(sent_tokens)
+    # grab the measurement of similarity (similarity scores)
     vals = cosine_similarity(tfidf[-1], tfidf)
+    # Get the index of the most similar text/sentence to the users response
     idx = vals.argsort()[0][-2]
+    # Reduce the dimensionality of vals into a 1d array
     flat = vals.flatten()
+    # sort into ascending order
     flat.sort()
+    # Get the most similar score to the users responsea
     req_tfidf = flat[-2]
-    if (req_tfidf == 0):
-        robo_response = robo_response + "I am sorry! I don't understand you"
-        return robo_response
+    if req_tfidf == 0:
+        bot_response = bot_response + "I am sorry! I don't understand you"
+        return bot_response
     else:
-        robo_response = robo_response + sent_tokens[idx]
-        return robo_response
+        bot_response = bot_response + sent_tokens[idx]
+        return bot_response
 
 
 flag = True
-print("ROBO: My name is Robo. I will answer your queries about Chatbots. If you want to exit, type Bye!")
+print("BOT: My name is bot. Hello there")
 while flag:
     user_response = input()
     user_response = user_response.lower()
     if user_response != 'bye':
         if user_response == 'thanks' or user_response == 'thank you':
             flag = False
-            print("ROBO: You are welcome..")
+            print("BOT: You are welcome..")
         else:
             if greeting(user_response) is not None:
-                print("ROBO: " + greeting(user_response))
+                print("BOT: " + greeting(user_response))
             else:
-                print("ROBO: ", end="")
+                print("BOT: ", end="")
                 print(response(user_response))
                 sent_tokens.remove(user_response)
     else:
         flag = False
-        print("ROBO: Bye! take care..")
+        print("BOT: Bye! take care..")
